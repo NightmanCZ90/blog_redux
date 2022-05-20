@@ -1,4 +1,6 @@
-.Navigation {
+.navigation {
+  position: fixed;
+  width: 100vw;
   display: flex;
   flex-direction: row;
   justify-content: center;

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Button, IconButton } from '@mui/material'
 import EmojiNatureIcon from '@mui/icons-material/EmojiNature';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -5,8 +6,10 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import './Navigation.scss';
 
 const Navigation: React.FC = (props) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="Navigation">
+    <div className="navigation">
       <div className="menu">
         <div>
           <IconButton
@@ -15,13 +18,14 @@ const Navigation: React.FC = (props) => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={() => navigate('/')}
           >
             <EmojiNatureIcon />
           </IconButton>
 
-          <Button color="inherit">Recent Articles</Button>
+          <Button onClick={() => navigate('/')} color="inherit">Recent Articles</Button>
 
-          <Button color="inherit">About</Button>
+          <Button onClick={() => navigate('/about')} color="inherit">About</Button>
         </div>
 
         <Button endIcon={<ArrowForwardIcon />}>
