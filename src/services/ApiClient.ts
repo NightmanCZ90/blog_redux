@@ -29,7 +29,7 @@ abstract class ApiClient {
       })
       return data;
     } catch(err: any) {
-      throw err;
+      throw err.response.data.message;
     }
   }
 }
