@@ -10,6 +10,10 @@ interface RequestOptions {
   headers?: Record<string, string>,
 }
 
+interface AuthRequestOptions extends RequestOptions {
+  accessToken: string,
+}
+
 abstract class ApiClient {
 
   /**
@@ -31,6 +35,13 @@ abstract class ApiClient {
     } catch(err: any) {
       throw err.response.data.message;
     }
+  }
+
+  async authorizedAxiosRequest<T>(options: AuthRequestOptions) {
+    return this.axiosRequest<T>({
+      ...options,
+      headers: { ...options.headers, Authorization: `Bearer ${options.accessToken}` },
+    })
   }
 }
 

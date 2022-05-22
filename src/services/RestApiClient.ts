@@ -40,6 +40,18 @@ class RestApiClient extends ApiClient {
       method: 'GET',
     })
   }
+
+  /**
+   * Tenants
+   */
+
+  async getTenant(tenantId: string, accessToken: string) {
+    return this.authorizedAxiosRequest<Tenant>({
+      url: `/tenants/${tenantId}`,
+      method: 'GET',
+      accessToken,
+    })
+  }
 }
 
 export default new RestApiClient();

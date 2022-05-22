@@ -1,8 +1,9 @@
 import { Button, CircularProgress, Paper, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { login } from '../../slices/currentUserSlice';
 import './Login.scss';
+import { useNavigate } from 'react-router-dom';
 
 export type LoginPageFormData = {
   email: string;
@@ -19,9 +20,16 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { error, status } = useAppSelector((state) => state.currentUser);
   const [formData, setFormData] = useState<LoginPageFormData>(initialFormData);
+
+  useEffect(() => {
+    if (status === 'successful') {
+      navigate('/my-articles')
+    }
+  }, [status, navigate]);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
