@@ -11,5 +11,10 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+
+    & > div {
+      display: flex;
+      align-items: center;
+    }
   }
 }

@@ -28,9 +28,14 @@ const Navigation: React.FC = (props) => {
           <Button onClick={() => navigate('/about')} color="inherit">About</Button>
         </div>
 
-        <Button endIcon={<ArrowForwardIcon />}>
-          Log in
-        </Button>
+        <div>
+          <Button onClick={() => navigate('/signup')}>
+            Sign Up
+          </Button>
+          <Button onClick={() => navigate('/login')} endIcon={<ArrowForwardIcon />}>
+            Log in
+          </Button>
+        </div>
       </div>
     </div>
   )
