@@ -2,10 +2,12 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
 import articleListReducer from './pages/ArticleList/articleListSlice';
+import currentUserReducer from './slices/currentUserSlice';
 
 export const store = configureStore({
   reducer: {
     articleList: articleListReducer,
+    currentUser: currentUserReducer,
   },
 });
 
