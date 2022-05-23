@@ -10,8 +10,12 @@ export interface Tenant extends CreateTenant {
   lastUsedAt: Date;
 }
 
-export type AccessToken = {
+export interface AccessToken {
   access_token: string;
   expires_in: number;
   token_type: string;
+}
+
+export interface AccessTokenWithExpiration extends AccessToken {
+  expiresAt: number;
 }

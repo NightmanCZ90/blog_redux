@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import './App.scss';
@@ -7,20 +8,35 @@ import ArticleList from './pages/ArticleList';
 import Login from './pages/Login';
 import MyArticles from './pages/MyArticles';
 import SignUp from './pages/SignUp';
-import { useAppSelector } from './store';
-import { Tenant } from './types/user';
+import { getTenant, setToken } from './slices/currentUserSlice';
+import { useAppDispatch, useAppSelector } from './store';
+import { AccessToken, AccessTokenWithExpiration } from './types/user';
 
-const Protected = (props: { user: Tenant | null, children: React.ReactElement }) => {
-  const { children, user } = props;
+const Protected = (props: { accessToken: AccessToken | null, children: React.ReactElement }) => {
+  const { children, accessToken } = props;
 
-  if (!user) {
+  if (!accessToken) {
     return <Navigate to="/" replace />
   }
   return children;
 }
 
 const App: React.FC = () => {
-  const { user } = useAppSelector(state => state.currentUser);
+  const dispatch = useAppDispatch();
+  const { user, accessToken } = useAppSelector(state => state.currentUser);
+  const savedToken = getSavedToken();
+
+  useEffect(() => {
+    if (!accessToken) {
+      savedToken && dispatch(setToken(savedToken));
+    }
+  }, [dispatch, accessToken, savedToken]);
+
+  useEffect(() => {
+    if (accessToken && !user) {
+      dispatch(getTenant(accessToken.access_token));
+    }
+  }, [dispatch, accessToken, user]);
 
   return (
     <div className="App">
@@ -31,7 +47,7 @@ const App: React.FC = () => {
         <Route
           path="/my-articles"
           element={
-            <Protected user={user}>
+            <Protected accessToken={savedToken || accessToken}>
               <MyArticles />
             </Protected>
           } 
@@ -41,6 +57,11 @@ const App: React.FC = () => {
       </Routes>
     </div>
   );
+
+  function getSavedToken() {
+    const savedToken = localStorage.getItem('access_token');
+    return savedToken ? JSON.parse(savedToken) as AccessTokenWithExpiration : null;
+  }
 }
 
 export default App;

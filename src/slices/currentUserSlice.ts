@@ -1,18 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import RestApiClient from '../services/RestApiClient';
-import { AccessToken, Tenant } from '../types/user';
+import { AccessToken, AccessTokenWithExpiration, Tenant } from '../types/user';
 
 interface CurrentUserState {
   status: 'idle' | 'loading' | 'successful' | 'failed',
+  tenantStatus: 'idle' | 'loading' | 'successful' | 'failed',
   error: string | null;
   user: Tenant | null;
-  accessToken: string | null;
+  accessToken: AccessToken | null;
   // TODO: Ask and implement tenantId - there is nowhere to get the user's id from
   tenantId: string,
 }
 
 const initialState: CurrentUserState = {
   status: 'idle',
+  tenantStatus: 'idle',
   error: null,
   user: null,
   accessToken: null,
@@ -37,8 +39,15 @@ export const login = createAsyncThunk(
       username: body.email,
       password: body.password,
     });
-    const user = await RestApiClient.getTenant(initialState.tenantId, token.access_token);
-    return { token, user };
+    return token;
+  }
+)
+
+export const getTenant = createAsyncThunk(
+  'getTenant',
+  async (accessToken: string) => {
+    const user = await RestApiClient.getTenant(initialState.tenantId, accessToken);
+    return user;
   }
 )
 
@@ -46,11 +55,16 @@ const currentUserSlice = createSlice({
   name: 'currentUser',
   initialState,
   reducers: {
+    setToken: (state: CurrentUserState, action: PayloadAction<AccessTokenWithExpiration>) => {
+      state.accessToken = action.payload;
+    },
     signOut: (state: CurrentUserState) => {
-      state.accessToken = null
-      state.user = null
-      state.error = null
-      state.status = 'idle'
+      state.accessToken = null;
+      state.user = null;
+      state.error = null;
+      state.status = 'idle';
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('tenantId');
     },
   },
   extraReducers: {
@@ -58,37 +72,55 @@ const currentUserSlice = createSlice({
     /** SignUp */
 
     [signUp.fulfilled.type]: (state: CurrentUserState, action: PayloadAction<Tenant>) => {
-      state.status = 'successful'
-      state.error = null
-      state.user = action.payload
+      state.status = 'successful';
+      state.error = null;
+      state.user = action.payload;
     },
     [signUp.pending.type]: (state: CurrentUserState) => {
-      state.status = 'loading'
-      state.error = null
+      state.status = 'loading';
+      state.error = null;
     },
     [signUp.rejected.type]: (state: CurrentUserState, { error }) => {
-      state.status = 'failed'
-      state.error = error.message
+      state.status = 'failed';
+      state.error = error.message;
     },
 
     /** Login */
     
-    [login.fulfilled.type]: (state: CurrentUserState, action: PayloadAction<{ token: AccessToken, user: Tenant }>) => {
-      state.status = 'successful'
-      state.error = null
-      state.accessToken = action.payload.token.access_token
-      state.user = action.payload.user
+    [login.fulfilled.type]: (state: CurrentUserState, action: PayloadAction<AccessToken>) => {
+      state.status = 'successful';
+      state.error = null;
+
+      const token = {
+        ...action.payload,
+        expiresAt: Date.now() + (action.payload.expires_in * 1000),
+      }
+
+      state.accessToken = token;
+      localStorage.setItem('access_token', JSON.stringify(token));
     },
     [login.pending.type]: (state: CurrentUserState) => {
-      state.status = 'loading'
-      state.error = null
+      state.status = 'loading';
+      state.error = null;
     },
     [login.rejected.type]: (state: CurrentUserState, { error }) => {
-      state.status = 'failed'
-      state.error = error.message
+      state.status = 'failed';
+      state.error = error.message;
+    },
+
+    /** Tenant */
+
+    [getTenant.fulfilled.type]: (state: CurrentUserState, action: PayloadAction<Tenant>) => {
+      state.tenantStatus = 'successful';
+      state.user = action.payload;
+
+      localStorage.setItem('tenantId', action.payload.tenantId);
+    },
+    [getTenant.pending.type]: (state: CurrentUserState) => {
+      state.tenantStatus = 'loading';
     },
   },
 })
 
-export const {signOut } = currentUserSlice.actions
+export const { setToken, signOut } = currentUserSlice.actions;
 export default currentUserSlice.reducer;

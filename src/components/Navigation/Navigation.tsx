@@ -75,11 +75,15 @@ const Navigation: React.FC = () => {
             'aria-labelledby': 'user-menu',
           }}
         >
-          <MenuItem onClick={() => {handleClose(); dispatch(signOut())}}>Sign Out</MenuItem>
+          <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
         </Menu>
       </>
     )
   }
+
+  /**
+   * Renders
+   */
 
   /**
    * renders buttons when user is not logged in
@@ -95,6 +99,16 @@ const Navigation: React.FC = () => {
         </Button>
       </>
     )
+  }
+
+  /**
+   * Handlers
+   */
+
+  function handleSignOut() {
+    handleClose();
+    dispatch(signOut());
+    navigate('/');
   }
 }
 
