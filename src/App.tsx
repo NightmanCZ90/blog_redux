@@ -8,7 +8,7 @@ import ArticleList from './pages/ArticleList';
 import Login from './pages/Login';
 import MyArticles from './pages/MyArticles';
 import SignUp from './pages/SignUp';
-import { getTenant, setToken } from './slices/currentUserSlice';
+import { getTenant, setToken, signOut } from './slices/currentUserSlice';
 import { useAppDispatch, useAppSelector } from './store';
 import { AccessToken, AccessTokenWithExpiration } from './types/user';
 
@@ -28,6 +28,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!accessToken) {
+      savedToken && Date.now() >= savedToken.expiresAt && dispatch(signOut());
       savedToken && dispatch(setToken(savedToken));
     }
   }, [dispatch, accessToken, savedToken]);

@@ -7,7 +7,7 @@ interface CurrentUserState {
   tenantStatus: 'idle' | 'loading' | 'successful' | 'failed',
   error: string | null;
   user: Tenant | null;
-  accessToken: AccessToken | null;
+  accessToken: AccessTokenWithExpiration | null;
   // TODO: Ask and implement tenantId - there is nowhere to get the user's id from
   tenantId: string,
 }
