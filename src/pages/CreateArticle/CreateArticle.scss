@@ -1,4 +1,17 @@
 .create-article-page {
-  height: 100vh;
   padding: 7.5rem 14rem;
+
+  .create-article-page__header {
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .create-article-page__inputs {
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
 }
