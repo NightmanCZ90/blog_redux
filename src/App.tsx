@@ -5,6 +5,7 @@ import './App.scss';
 import Navigation from './components/Navigation';
 import About from './pages/About';
 import ArticleList from './pages/ArticleList';
+import CreateArticle from './pages/CreateArticle';
 import Login from './pages/Login';
 import MyArticles from './pages/MyArticles';
 import SignUp from './pages/SignUp';
@@ -50,6 +51,14 @@ const App: React.FC = () => {
           element={
             <Protected accessToken={savedToken || accessToken}>
               <MyArticles />
+            </Protected>
+          } 
+        />
+        <Route
+          path="/create"
+          element={
+            <Protected accessToken={savedToken || accessToken}>
+              <CreateArticle />
             </Protected>
           } 
         />
