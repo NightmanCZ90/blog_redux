@@ -29,7 +29,7 @@ const articleSlice = createSlice({
   name: 'article',
   initialState,
   reducers: {
-    setError: (state: ArticleState, action: PayloadAction<string>) => {
+    setError: (state: ArticleState, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
     clearError: (state: ArticleState) => {
