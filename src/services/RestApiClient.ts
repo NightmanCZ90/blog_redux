@@ -1,4 +1,5 @@
-import { ArticleList } from '../types/articles';
+import { ArticleDetail, ArticleList } from '../types/articles';
+import { ImageInfo } from '../types/images';
 import { AccessToken, Tenant } from '../types/user';
 import ApiClient from './ApiClient';
 
@@ -41,6 +42,15 @@ class RestApiClient extends ApiClient {
     })
   }
 
+  async createArticle(body: { title: string, imageId: string, content: string }, accessToken: string) {
+    return this.authorizedAxiosRequest<ArticleDetail>({
+      url: '/articles',
+      method: 'POST',
+      accessToken,
+      body,
+    })
+  }
+
   /**
    * Tenants
    */
@@ -50,6 +60,22 @@ class RestApiClient extends ApiClient {
       url: `/tenants/${tenantId}`,
       method: 'GET',
       accessToken,
+    })
+  }
+
+  /**
+   * Images
+   */
+
+   async uploadImage(body: { image: string | ArrayBuffer | null}, accessToken: string) {
+    return this.authorizedAxiosRequest<ImageInfo[]>({
+      url: '/images',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      accessToken,
+      body,
     })
   }
 }

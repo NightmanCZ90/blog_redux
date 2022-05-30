@@ -27,6 +27,7 @@ abstract class ApiClient {
   async axiosRequest<T>(options: RequestOptions) {
     try {
       const { data } = await axiosPrivate.request<T>({
+        ...options,
         url: options.url,
         method: options.method,
         data: options.body,
