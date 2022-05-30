@@ -55,7 +55,7 @@ const CreateArticle: React.FC = () => {
     reader.onloadend = async () => {
       try {
         const res = await RestApiClient.uploadImage({ image: reader.result }, accessToken?.access_token);
-        res && res.length > 0 && createArticle({ ...formData, imageId: res[0].imageId, accessToken: accessToken?.access_token });
+        res && res.length > 0 && dispatch(createArticle({ ...formData, imageId: res[0].imageId, accessToken: accessToken?.access_token }));
       } catch (err: any) {
         dispatch(setError(err || 'Error uploading image'));
       }
