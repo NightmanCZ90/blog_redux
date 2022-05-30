@@ -20,5 +20,5 @@ export interface ArticleDetail extends ArticleWithDates {
 
 export type ArticleList = {
   pagination: Pagination,
-  items: ArticleWithDates[],
+  items: ArticleDetail[],
 }
