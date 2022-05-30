@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, CircularProgress, IconButton, InputLabel, TextField } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import './CreateArticle.scss';
@@ -8,11 +8,13 @@ import { createArticle, setError } from '../../slices/articleSlice';
 
 export type NewArticleFormData = {
   title: string;
+  perex: string;
   content: string;
 }
 
 const initialFormData = {
   title: '',
+  perex: '',
   content: '',
 }
 
@@ -134,6 +136,19 @@ const CreateArticle: React.FC = () => {
             </div>
           )
           : null}
+        </div>
+
+        <div>
+          <InputLabel htmlFor="article-perex">Perex</InputLabel>
+          <TextField 
+            id="article-perex"
+            fullWidth
+            size="small"
+            name="perex"
+            required
+            value={formData.perex}
+            onChange={handleChange}
+          />
         </div>
 
         <div>

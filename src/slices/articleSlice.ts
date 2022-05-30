@@ -14,12 +14,13 @@ const initialState: ArticleState = {
 
 export const createArticle = createAsyncThunk(
   'createArticle',
-  async (body: { title: string, imageId: string, content: string, accessToken: string }) => {
-    const { title, imageId, content, accessToken } = body;
+  async (body: { title: string, imageId: string, content: string, perex: string, accessToken: string }) => {
+    const { title, imageId, content, perex, accessToken } = body;
     const response = await RestApiClient.createArticle({
       title,
       imageId,
       content,
+      perex,
     }, accessToken);
     return response;
   }

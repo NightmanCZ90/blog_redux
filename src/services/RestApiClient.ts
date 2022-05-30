@@ -42,7 +42,7 @@ class RestApiClient extends ApiClient {
     })
   }
 
-  async createArticle(body: { title: string, imageId: string, content: string }, accessToken: string) {
+  async createArticle(body: { title: string, imageId: string, content: string, perex: string }, accessToken: string) {
     return this.authorizedAxiosRequest<ArticleDetail>({
       url: '/articles',
       method: 'POST',
