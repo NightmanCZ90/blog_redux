@@ -1,6 +1,9 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, CircularProgress, IconButton, InputLabel, TextField } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
+import MDEditor from '@uiw/react-md-editor';
+import rehypeSanitize from 'rehype-sanitize';
+
 import './CreateArticle.scss';
 import { useAppDispatch, useAppSelector } from '../../store';
 import RestApiClient from '../../services/RestApiClient';
@@ -22,6 +25,12 @@ const CreateArticle: React.FC = () => {
   const { accessToken } = useAppSelector(state => state.currentUser);
   const { error, status } = useAppSelector(state => state.article);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // reset form after successful article creation
+    if (status === 'successful') setFormData(initialFormData);
+  }, [status]);
+
   const [formData, setFormData] = useState<NewArticleFormData>(initialFormData);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<File | null>(null);
@@ -68,7 +77,7 @@ const CreateArticle: React.FC = () => {
     }
   };
 
-  const isDisabled = !image || !formData.title || !formData.content;
+  const isDisabled = !image || !formData.title || !formData.perex || !formData.content;
 
   return (
     <form className="create-article-page" onSubmit={handleSubmit}>
@@ -153,16 +162,12 @@ const CreateArticle: React.FC = () => {
 
         <div>
           <InputLabel htmlFor="article-content">Content</InputLabel>
-          <TextField
-            id="article-content"
-            name="content"
-            required
-            size="small"
-            fullWidth
-            multiline
-            rows={30}
-            onChange={handleChange}
+          <MDEditor
             value={formData.content}
+            onChange={(val) => setFormData({ ...formData, content: val || '' })}
+            previewOptions={{
+              rehypePlugins: [[rehypeSanitize]],
+            }}
           />
         </div>
       </div>
